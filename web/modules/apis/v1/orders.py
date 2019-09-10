@@ -1,7 +1,6 @@
 import json
 from flask import jsonify, request
 from flask_restplus import Resource, Namespace, fields
-from modules.apis.util import model_result_set_to_json
 from modules.services.order import OrderService
 
 
