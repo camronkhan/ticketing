@@ -1,0 +1,55 @@
+Table users as U {
+  user_id int [pk]
+	user_name varchar
+  first_name varchar
+  last_name varchar
+  email_address varchar
+}
+
+Table user_sessions as US {
+  user_session_id int [pk]
+  first_event_ts datetime
+	last_event_ts datetime
+  referral_code varchar
+  user_id int [ref: > U.user_id] // many-to-one
+}
+
+Table venues as V {
+  venue_id int [pk]
+  venue_name varchar
+  address_line_1 varchar
+  address_line_2 varchar
+  address_line_3 varchar
+  city varchar
+  county_region varchar
+  state_province varchar
+  zip_post_code varchar
+  country varchar
+}
+
+Table events as E {
+  event_id int [pk]
+  event_name varchar
+  event_ts varchar
+  venue_id int [ref: > V.venue_id] // many-to-one
+}
+
+Table listings as L {
+  listing_id int [pk]
+  price float
+  original_qty int
+  current_qty int
+  section varchar
+  row varchar
+  event_id int [ref: > E.event_id] // many-to-one
+  user_id int [ref: > U.user_id] // many-to-one
+}
+
+Table orders as O {
+    order_id int [pk]
+    order_qty varchar
+    original_price float
+    final_price float
+    listing_id int [ref: > L.listing_id] // many-to-one
+    user_id int [ref: > U.user_id] // many-to-one
+}

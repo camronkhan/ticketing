@@ -1,0 +1,24 @@
+version: '3'
+services:
+  db:
+    image: "postgres:11.5-alpine"
+    networks:
+      - db_network
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+  web:
+    build: web/.
+    networks:
+      - db_network
+      - web_network
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+networks:
+  db_network:
+    driver: bridge
+  web_network:
+    driver: bridge

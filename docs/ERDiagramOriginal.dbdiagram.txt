@@ -1,0 +1,152 @@
+Table users as U {
+  user_id int [pk]
+  user_name varchar
+  first_name varchar
+  last_name varchar
+  company_name varchar
+  email_address varchar
+  phone_primary varchar
+  phone_secondary varchar
+  address_line_1 varchar
+  address_line_2 varchar
+  address_line_3 varchar
+  city varchar
+  county_region varchar
+  state_province varchar
+  zip_post_code varchar
+  country varchar
+}
+
+Table user_sessions as US {
+  user_session_id int [pk]
+  first_event_ts datetime
+  last_event_ts datetime
+  referral_code varchar
+  browser varchar
+  browser_version varchar
+  os_type varchar
+  os_version varchar
+  ip_address varchar
+  mobile_device_flag boolean
+  mobile_device_id varchar
+  mobile_carrier varchar
+  mobile_device_brand varchar
+  mobile_device_model varchar
+  mobile_device_model_num varchar
+  user_id int [ref: > U.user_id] // many-to-one
+}
+
+Table venues as V {
+  venue_id int [pk]
+  venue_name varchar
+  address_line_1 varchar
+  address_line_2 varchar
+  address_line_3 varchar
+  city varchar
+  county_region varchar
+  state_province varchar
+  zip_post_code varchar
+  country varchar
+}
+
+Table events as E {
+  event_id int [pk]
+  event_name varchar
+  event_ts varchar
+  venue_id int [ref: > V.venue_id] // many-to-one
+}
+
+Table ticket_tiers as TT {
+  ticket_tier_id int [pk]
+
+}
+
+Table ticket_formats as TF {
+  ticket_format_id int [pk]
+  format_code varchar
+  format_description varchar
+}
+
+Table tickets as T {
+  ticket_id int [pk]
+  serial_number varchar
+  section varchar
+  row varchar
+  ticket_format_id int [ref: - TF.ticket_format_id] // one-to-one
+  ticket_tier_id int [ref: > TT.ticket_tier_id] // many-to-one
+  event_id int [ref: > E.event_id] // many-to-one
+  user_id int [ref: > U.user_id] // many-to-one
+}
+
+Table listings as L {
+  listing_id int [pk]
+  price float
+  listing_ts datetime
+  ticket_availability_ts datetime
+  seller_user_id int [ref: > U.user_id] // many-to-one
+}
+
+Table ticket_listings {
+  ticket_id int [pk, ref: - T.ticket_id] // one-to-one
+  listing_id int [pk, ref: - L.listing_id] // one-to-one
+  effective_start_ts datetime
+  effective_end_ts datetime
+  effective_flag boolean
+}
+
+Table delivery_methods as DM {
+  delivery_method_id int [pk]
+  method_code varchar
+  method_description varchar
+}
+
+Table discounts as D {
+  discount_id int [pk]
+  discount_code varchar
+  discount_description varchar
+}
+
+Table orders as O {
+  order_id int [pk]
+  order_ts datetime
+  original_price float
+  final_price float
+  discount float
+  billing_first_name varchar
+  billing_last_name varchar
+  billing_company_name varchar
+  billing_phone_primary varchar
+  billing_phone_secondary varchar
+  billing_address_line_1 varchar
+  billing_address_line_2 varchar
+  billing_address_line_3 varchar
+  billing_city varchar
+  billing_county_region varchar
+  billing_state_province varchar
+  billing_zip_post_code varchar
+  billing_country varchar
+  delivery_first_name varchar
+  delivery_last_name varchar
+  delivery_company_name varchar
+  delivery_phone_primary varchar
+  delivery_phone_secondary varchar
+  delivery_address_line_1 varchar
+  delivery_address_line_2 varchar
+  delivery_address_line_3 varchar
+  delivery_city varchar
+  delivery_county_region varchar
+  delivery_state_province varchar
+  delivery_zip_post_code varchar
+  delivery_country varchar
+  discount_id int [ref: - D.discount_id] // one-to-one
+  delivery_method_id int [ref: - DM.delivery_method_id] // one-to-one
+  buyer_user_id int [ref: > U.user_id] // many-to-one
+}
+
+Table ticket_orders as TO {
+  ticket_id int [pk, ref: - T.ticket_id] // one-to-one
+  order_id int [pk, ref: - O.order_id] // one-to-one
+  effective_start_ts datetime
+  effective_end_ts datetime
+  effective_flag boolean
+}
